@@ -29,3 +29,11 @@ c_main_o:
         main.c
     ls -l build/main.o
     file build/main.o
+
+setup:
+    brew install nim llvm lld qemu
+
+    nim -v
+    clang --version
+    ld.lld --version
+    qemu-system-x86_64 --version
