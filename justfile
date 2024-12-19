@@ -1,5 +1,10 @@
+bootx64:
+    nim c --os:any --passl:"-Wl,-entry:EfiMain" --out:build/bootx64.efi src/bootx64.nim
+    ls -l build/bootx64.efi
+    file build/bootx64.efi
+
 main:
-    nim c --os:any --out:build/main.exe src/main.nim
+    nim c --os:any --passl:"-Wl,-entry:main" --out:build/main.exe src/main.nim
     ls -l build/main.exe
     file build/main.exe
 
