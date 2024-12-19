@@ -32,8 +32,14 @@ c_main_o:
 
 setup:
     brew install nim llvm lld qemu
+    brew tap uenob/qemu-hvf
+    brew install ovmf
 
     nim -v
     clang --version
     ld.lld --version
     qemu-system-x86_64 --version
+
+    mkdir -p ovmf
+    cp -f $(brew --prefix)/Cellar/ovmf/stable202102/share/OVMF/OvmfX64/* ovmf/
+    chmod +w ovmf/OVMF_VARS.fd
