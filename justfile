@@ -1,5 +1,5 @@
 main:
-    nim c --os:any --out:build/main.exe main.nim
+    nim c --os:any --out:build/main.exe src/main.nim
     ls -l build/main.exe
     file build/main.exe
 

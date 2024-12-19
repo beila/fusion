@@ -1,3 +1,5 @@
+{.used.}
+
 type
     const_pointer {.importc: "const void *".} = pointer
 
