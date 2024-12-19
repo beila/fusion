@@ -1,5 +1,6 @@
 import malloc
 import libc
+import uefi
 
 type
     EfiStatus = uint
@@ -48,4 +49,13 @@ proc NimMain() {.importc.}
 
 proc EfiMain(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus {.exportc.} =
     NimMain()
-    return EfiLoadError
+
+    #let msg = newWideCString("Hello, world from msg!\n").toWideCString
+    let msg = newWideCString("Hello, world from msg!\r\n").toWideCString
+
+    discard sysTable.conOut.clearScreen(sysTable.conOut)
+    discard sysTable.conOut.outputString(sysTable.conOut, msg)
+    #discard sysTable.conOut.outputString(sysTable.conOut, W"Hello, world! from W\r\n")
+    discard sysTable.conOut.outputString(sysTable.conOut, W "Hello, world! from W\r\n")
+
+    quit()
