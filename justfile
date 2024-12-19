@@ -1,21 +1,5 @@
 main:
-    nim c \
-        --nimcache:build \
-        --cpu:amd64 \
-        --os:any \
-        --cc:clang \
-        --passc:"-target x86_64-unknown-windows" \
-        --passc:"-ffreestanding" \
-        --passc:"-I/usr/include" \
-        --passc:"-I/usr/include/x86_64-linux-gnu" \
-        --passc:"-fuse-ld=lld-link" \
-        --passc:"-nostdlib" \
-        --passc:"-Wl,-entry:main" \
-        --passc:"-Wl,-subsystem:efi_application" \
-        -d:useMalloc \
-        --noMain:on \
-        --out:build/main.exe \
-        main.nim
+    nim c --os:any --out:build/main.exe main.nim
     ls -l build/main.exe
     file build/main.exe
 
