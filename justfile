@@ -1,3 +1,13 @@
+run: bootx64
+    mkdir -p diskimg/efi/boot
+    cp build/bootx64.efi diskimg/efi/boot/bootx64.efi
+    qemu-system-x86_64 \
+        -drive if=pflash,format=raw,file=ovmf/OVMF_CODE.fd,readonly=on \
+        -drive if=pflash,format=raw,file=ovmf/OVMF_VARS.fd \
+        -drive format=raw,file=fat:rw:diskimg \
+        -machine q35 \
+        -net none
+
 bootx64:
     nim c --os:any --passl:"-Wl,-entry:EfiMain" --out:build/bootx64.efi src/bootx64.nim
     ls -l build/bootx64.efi
