@@ -1,8 +1,5 @@
-import common/malloc
-import common/libc
+import debugcon, common/libc, common/malloc
 
-proc NimMain() {.importc.}
-
-proc main(): int {.exportc.} =
-    NimMain()
-    return 0
+proc KernelMain() {.exportc.} =
+    debugln "Hello, world!"
+    quit()
