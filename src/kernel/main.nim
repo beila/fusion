@@ -1,5 +1,5 @@
-import malloc
-import libc
+import common/malloc
+import common/libc
 
 proc NimMain() {.importc.}
 

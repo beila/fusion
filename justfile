@@ -11,9 +11,14 @@ run: bootloader
         -net none
 
 bootloader:
-    nim c {{ nimflags }} --passl:"-Wl,-entry:EfiMain" --out:build/bootx64.efi src/bootx64.nim
+    nim c {{ nimflags }} --out:build/bootx64.efi src/boot/bootx64.nim
     ls -l build/bootx64.efi
     file build/bootx64.efi
+
+kernel:
+    nim c {{ nimflags }} --out:build/kernel.bin src/kernel/main.nim
+    ls -l build/kernel.bin
+    file build/kernel.bin
 
 main:
     nim c {{ nimflags }} --passl:"-Wl,-entry:main" --out:build/main.exe src/main.nim
