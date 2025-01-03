@@ -19,6 +19,9 @@ kernel:
     nim c {{ nimflags }} --out:build/kernel.bin src/kernel/main.nim
     ls -l build/kernel.bin
     file build/kernel.bin
+    llvm-objdump --section-headers build/@mmain.nim.c.o
+    llvm-readelf --headers build/kernel.bin | grep --color=always --context=9999 "Entry point address:"
+    head -n 10 build/kernel.map | grep --color=always --context=9999 "KernelMain"
 
 main:
     nim c {{ nimflags }} --passl:"-Wl,-entry:main" --out:build/main.exe src/main.nim
