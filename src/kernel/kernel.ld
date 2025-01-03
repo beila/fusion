@@ -7,8 +7,7 @@ SECTIONS
         *(.text.*)
     }
     .rodata     : { *(.rodata*) }
-    .data       : { *(.data) }
-    .bss        : { *(.bss) }
+    .data       : { *(.data) *(.bss) }
     .shstrtab   : { *(.shstrtab) }
 
     /DISCARD/ : { *(*) }

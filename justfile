@@ -1,8 +1,10 @@
 nimflags := "--os:any"
 
-run: bootloader
+run: bootloader kernel
     mkdir -p diskimg/efi/boot
+    mkdir -p diskimg/efi/fusion
     cp build/bootx64.efi diskimg/efi/boot/bootx64.efi
+    cp build/kernel.bin diskimg/efi/fusion/kernel.bin
     qemu-system-x86_64 \
         -drive if=pflash,format=raw,file=ovmf/OVMF_CODE.fd,readonly=on \
         -drive if=pflash,format=raw,file=ovmf/OVMF_VARS.fd \
@@ -20,8 +22,16 @@ kernel:
     ls -l build/kernel.bin
     file build/kernel.bin
     llvm-objdump --section-headers build/@mmain.nim.c.o
-    llvm-readelf --headers build/kernel.bin | grep --color=always --context=9999 "Entry point address:"
     head -n 10 build/kernel.map | grep --color=always --context=9999 "KernelMain"
+    wc -c build/kernel.bin
+
+kernel_elf:
+    nim c {{ nimflags }} --passl:"--oformat=elf" --passl:"-Map=build/kernel.elf.map" --out:build/kernel.elf.bin src/kernel/main.nim
+    ls -l build/kernel.elf.bin
+    file build/kernel.elf.bin
+    llvm-objdump --section-headers build/@mmain.nim.c.o
+    llvm-readelf --headers build/kernel.elf.bin | grep --color=always --context=9999 "Entry point address\|\.data\|\.bss"
+    head -n 10 build/kernel.elf.map | grep --color=always --context=9999 "KernelMain"
 
 main:
     nim c {{ nimflags }} --passl:"-Wl,-entry:main" --out:build/main.exe src/main.nim
