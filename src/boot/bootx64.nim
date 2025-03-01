@@ -1,6 +1,6 @@
 import common/malloc
 import common/libc
-import uefi
+import common/uefi
 
 proc NimMain() {.importc.}
 
@@ -11,7 +11,7 @@ proc UnhandledException*(e: ref Exception) =
         echo getStackTrace(e)
     quit()
 
-proc EfiMainInner(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus =
+proc EfiMainInnerPrintStacktrace(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus =
     uefi.sysTable = sysTable
     consoleClear()
 
@@ -19,6 +19,28 @@ proc EfiMainInner(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus
     let a = [1, 2, 3]
     let n = 5
     discard a[n]
+
+proc checkStatus*(status: EfiStatus) =
+    if status != EfiSuccess:
+        consoleOut " [failed, status = {status:#x}]"
+        quit()
+    consoleOut " [success]\r\n"
+
+proc EfiMainInner(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus =
+    uefi.sysTable = sysTable
+    consoleClear()
+
+    echo "Fusion OS Bootloader"
+
+    # get the LoadedImage protocol from the image handle
+    var loadedImage: ptr EfiLoadedImageProtocol
+
+    consoleOut "boot: Acquiring LoadedImage protocol"
+    checkStatus uefi.sysTable.bootServices.handleProtocol(
+        imgHandle, EfiLoadedImageProtocolGuid, cast[ptr pointer](addr loadedImage)
+    )
+
+    quit()
 
 proc EfiMain(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus {.exportc.} =
     NimMain()
