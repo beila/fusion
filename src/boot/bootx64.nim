@@ -22,15 +22,17 @@ proc EfiMainInnerPrintStacktrace(imgHandle: EfiHandle, sysTable: ptr EfiSystemTa
 
 proc checkStatus*(status: EfiStatus) =
     if status != EfiSuccess:
-        consoleOut " [failed, status = {status:#x}]"
+        consoleOutError " [failed, status = {status:#x}]"
         quit()
-    consoleOut " [success]\r\n"
+    consoleOutSuccess " [success]\r\n"
 
 proc EfiMainInner(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus =
     uefi.sysTable = sysTable
     consoleClear()
 
-    echo "Fusion OS Bootloader"
+    consoleOutColor "Fusion OS Bootloader", fgYellow
+    echo ""
+    echo ""
 
     # get the LoadedImage protocol from the image handle
     var loadedImage: ptr EfiLoadedImageProtocol

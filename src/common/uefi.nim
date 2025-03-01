@@ -31,7 +31,7 @@ type
         testString*: pointer
         queryMode*: pointer
         setMode*: pointer
-        setAttribute*: pointer
+        setAttribute*: proc (this: ptr SimpleTextOutputProtocol, attr: uint64): EfiStatus {.cdecl.}
         clearScreen*: proc (this: ptr SimpleTextOutputProtocol): EfiStatus {.cdecl.}
         setCursorPos*: pointer
         enableCursor*: pointer
@@ -112,6 +112,34 @@ type
         data3: uint16
         data4: array[8, uint8]
 
+    SimpleTextForegroundColor* = enum
+      fgBlack
+      fgBlue
+      fgGreen
+      fgCyan
+      fgRed
+      fgMagenta
+      fgBrown
+      fgLightGray
+      fgDarkGray
+      fgLightBlue
+      fgLightGreen
+      fgLightCyan
+      fgLightRed
+      fgLightMagenta
+      fgYellow
+      fgWhite
+
+    SimpleTextBackgroundColor* = enum
+      bgBlack = 0x00
+      bgBlue = 0x10
+      bgGreen = 0x20
+      bgCyan = 0x30
+      bgRed = 0x40
+      bgMagenta = 0x50
+      bgBrown = 0x60
+      bgLightGray = 0x70
+
     EfiSimpleFileSystemProtocol* = object
         revision*: uint64
         openVolume*: pointer
@@ -148,3 +176,17 @@ proc consoleError*(str: string) =
     assert not sysTable.isNil
     discard sysTable.stdErr.outputString(sysTable.stdErr, W(str))
 
+proc consoleOutColor*(
+  str: string,
+  fg: SimpleTextForegroundColor,
+  bg: SimpleTextBackgroundColor = bgBlack
+) =
+  discard sysTable.conOut.setAttribute(sysTable.conOut, fg.uint + (bg.uint shl 4))
+  consoleOut(str)
+  discard sysTable.conOut.setAttribute(sysTable.conOut, fgLightGray.uint + (bgBlack.uint shl 4))
+
+proc consoleOutSuccess*(str: string) =
+  consoleOutColor(str, fgGreen)
+
+proc consoleOutError*(str: string) =
+  consoleOutColor(str, fgLightRed)
