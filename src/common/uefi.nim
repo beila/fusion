@@ -112,6 +112,10 @@ type
         data3: uint16
         data4: array[8, uint8]
 
+    EfiSimpleFileSystemProtocol* = object
+        revision*: uint64
+        openVolume*: pointer
+
 const
     EfiSuccess* = 0
     EfiLoadError* = 1
@@ -119,6 +123,11 @@ const
     EfiLoadedImageProtocolGuid* = EfiGuid(
         data1: 0x5B1B31A1, data2: 0x9562, data3: 0x11d2,
         data4: [0x8e, 0x3f, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
+    )
+
+    EfiSimpleFileSystemProtocolGuid* = EfiGuid(
+        data1: 0x964e5b22'u32, data2: 0x6459, data3: 0x11d2,
+        data4: [0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
     )
 
 var

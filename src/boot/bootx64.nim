@@ -40,6 +40,13 @@ proc EfiMainInner(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus
         imgHandle, EfiLoadedImageProtocolGuid, cast[ptr pointer](addr loadedImage)
     )
 
+    var fileSystem: ptr EfiSimpleFileSystemProtocol
+
+    consoleOut "boot: Acquiring SimpleFileSystem protocol"
+    checkStatus uefi.sysTable.bootServices.handleProtocol(
+        loadedImage.deviceHandle, EfiSimpleFileSystemProtocolGuid, cast[ptr pointer](addr fileSystem)
+    )
+
     quit()
 
 proc EfiMain(imgHandle: EfiHandle, sysTable: ptr EfiSystemTable): EfiStatus {.exportc.} =
