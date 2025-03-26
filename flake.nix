@@ -8,10 +8,20 @@
         pkgs = import nixpkgs { inherit system; };
     in {
         devShells.${system}.simple = pkgs.mkShell {
-            packages = [pkgs.just];
+            packages = with pkgs;
+                [
+                    just
+                    libllvm
+                    lld
+                    nim-unwrapped
+                    qemu
+                ];
             shellHook = ''
-                ${pkgs.just}/bin/just
-            '';
+                nim -v
+                clang --version
+                ld.lld --version
+                qemu-system-x86_64 --version
+                '';
         };
     };
 }
